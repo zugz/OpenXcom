@@ -2185,15 +2185,22 @@ int TileEngine::calculateLine(const Position& origin, const Position& target, bo
  */
 int TileEngine::calculateParabola(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, double curvature, const Position delta)
 {
-	double ro = sqrt((double)((target.x - origin.x) * (target.x - origin.x) + (target.y - origin.y) * (target.y - origin.y) + (target.z - origin.z) * (target.z - origin.z)));
+	Position diff = target - origin;
+	if (Options::battleRealisticAccuracy)
+		diff += delta;
+
+	double ro = sqrt((double)(diff.x*diff.x+diff.y*diff.y+diff.z*diff.z));
 
 	if (AreSame(ro, 0.0)) return V_EMPTY;//just in case
 
-	double fi = acos((double)(target.z - origin.z) / ro);
-	double te = atan2((double)(target.y - origin.y), (double)(target.x - origin.x));
+	double fi = acos((double)diff.z / ro);
+	double te = atan2((double)diff.y, (double)diff.x);
 
-	te += (delta.x / ro) / 2 * M_PI; //horizontal magic value
-	fi += ((delta.z + delta.y) / ro) / 14 * M_PI * curvature; //another magic value (vertical), to make it in line with fire spread
+	if (!Options::battleRealisticAccuracy)
+	{
+		te += (delta.x / ro) / 2 * M_PI; //horizontal magic value
+		fi += ((delta.z + delta.y) / ro) / 14 * M_PI * curvature; //another magic value (vertical), to make it in line with fire spread
+	}
 
 	double zA = sqrt(ro)*curvature;
 	double zK = 4.0 * zA / ro / ro;
