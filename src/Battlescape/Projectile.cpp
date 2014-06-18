@@ -267,7 +267,10 @@ void Projectile::applyAccuracy(const Position& origin, Position *target, double 
 		// effectiveAccuracy chance of being within [-1,1].
 		double effectiveAccuracy = std::min(0.99, accuracy / 1.1);
 		double s = 1 / fabs(invNorm((1 - effectiveAccuracy)/2));
-		static const double refDistance = 16*16;
+
+		// we set refDistance to 20 tiles' distance; c.f.
+		// http://www.ufopaedia.org/index.php?title=Firing_Accuracy_Testing 
+		static const double refDistance = 20*16;
 		static const double refAngle = atan2(8, refDistance);
 
 
