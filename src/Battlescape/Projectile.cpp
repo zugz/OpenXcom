@@ -265,7 +265,7 @@ void Projectile::applyAccuracy(const Position& origin, Position *target, double 
 		//
 		// s is set such that RNG::boxMuller(0,s) has
 		// effectiveAccuracy chance of being within [-1,1].
-		double effectiveAccuracy = std::min(0.99, accuracy / 1.1);
+		double effectiveAccuracy = std::min(0.99, accuracy);
 		double s = 1 / fabs(invNorm((1 - effectiveAccuracy)/2));
 
 		// we set refDistance to 20 tiles' distance; c.f.
