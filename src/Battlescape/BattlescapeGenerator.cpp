@@ -700,7 +700,7 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
 	{
 		month =
 		((size_t) _game->getSavedGame()->getMonthsPassed()) > _game->getRuleset()->getAlienItemLevels().size() - 1 ?  // if
-		_game->getRuleset()->getAlienItemLevels().size() - 1 :  // then
+		_game->getRuleset()->getAlienItemLevels().size() - 1 : // then
 		_game->getSavedGame()->getMonthsPassed() ;  // else
 	}
 	else
@@ -941,7 +941,6 @@ bool BattlescapeGenerator::placeItemByLayout(BattleItem *item)
  */
 bool BattlescapeGenerator::addItem(BattleItem *item, BattleUnit *unit, bool allowSecondClip)
 {
-	RuleInventory *ground = _game->getRuleset()->getInventory("STR_GROUND");
 	RuleInventory *rightHand = _game->getRuleset()->getInventory("STR_RIGHT_HAND");
 	bool placed = false;
 	bool loaded = false;
@@ -1679,6 +1678,13 @@ int BattlescapeGenerator::loadMAP(MapBlock *mapblock, int xoff, int yoff, RuleTe
 				_save->getTile(Position(x, y, z))->setMapData(0, -1, -1, part);
 			}
 		}
+		if (craft && _craftZ == z)
+		{
+			for (int z2 = _save->getMapSizeZ()-1; z2 >= _craftZ; --z2)
+			{
+				_save->getTile(Position(x, y, z2))->setDiscovered(true, 2);
+			}
+		}
 		_save->getTile(Position(x, y, z))->setDiscovered(discovered, 2);
 
 		x++;
@@ -1810,7 +1816,7 @@ void BattlescapeGenerator::deployCivilians(int max)
 	if (max)
 	{
 		// inevitably someone will point out that ufopaedia says 0-16 civilians.
-		// to that person:  i looked at the code and it says otherwise.
+		// to that person: i looked at the code and it says otherwise.
 		// 0 civilians would only be a possibility if there were already 80 units,
 		// or no spawn nodes for civilians.
 		int number = RNG::generate(max/2, max);
